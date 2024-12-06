@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "QR Kod Oluşturma";
+    Layout = null;
+}
+
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Sayfa Düzeni -->
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh; background: linear-gradient(45deg, #ff7f50, #ff6347, #ff4500); overflow: hidden;">
+
+    <div class="card p-5 shadow-lg" style="width: 600px; border-radius: 15px;">
+        <h3 class="text-center mb-4" style="font-size: 2rem;">QR Kod Oluşturma</h3>
+
+        @using (Html.BeginForm("Index", "Qr", FormMethod.Post))
+        {
+            <div class="form-group">
+                <label for="Code" style="font-size: 1.5rem;">Kod Girin:</label>
+                <input type="text" name="code" class="form-control form-control-lg" placeholder="QR kod için metin" required style="font-size: 1.2rem;" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-lg mt-3" style="font-size: 1.2rem;">
+                <i class="fas fa-qrcode"></i> QR Kod Oluştur
+            </button>
+        }
+
+        <br />
+
+        @if (ViewBag.QrCodeImage != null)
+        {
+            <div class="mt-4 text-center">
+                <h4 style="font-size: 1.5rem;">QR Kodunuz:</h4>
+                <img src="@ViewBag.QrCodeImage" alt="QR Code" class="img-fluid" style="max-width: 400px;" />
+
+                <!-- İndirme Butonu -->
+                <br />
+                <a href="@ViewBag.QrCodeImage" download="QRCode.png" class="btn btn-success btn-lg mt-3">
+                    <i class="fas fa-download"></i> QR Kodunu İndir
+                </a>
+            </div>
+        }
+        else if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger mt-4">@ViewBag.Error</div>
+        }
+    </div>
+</div>
+
+<!-- Bootstrap JS ve Bağımlılıkları -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Arka Plan Geçişi için JavaScript -->
+<script>
+    // Arka plan geçişi için çapraz RGB renk geçişleri
+    let currentIndex = 0;
+    let colorPairs = [
+        { start: 'rgb(255, 127, 80)', end: 'rgb(255, 99, 71)' },
+        { start: 'rgb(255, 69, 0)', end: 'rgb(255, 160, 122)' },
+        { start: 'rgb(240, 128, 128)', end: 'rgb(255, 99, 71)' },
+        { start: 'rgb(255, 105, 180)', end: 'rgb(255, 182, 193)' }
+    ];
+
+    function changeBackgroundColor() {
+        let colorPair = colorPairs[currentIndex];
+        document.body.style.transition = "background 2s ease-in-out";
+        document.body.style.background = `linear-gradient(45deg, ${colorPair.start}, ${colorPair.end})`;
+
+        // Sonraki renk çiftini seç
+        currentIndex = (currentIndex + 1) % colorPairs.length;
+    }
+
+    // Sayfa yüklendiğinde geçişi başlat
+    window.onload = function () {
+        setInterval(changeBackgroundColor, 2000);
+    };
+</script>
